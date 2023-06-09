@@ -1,0 +1,45 @@
+server:
+  port: 8084
+ 
+spring:
+  application:
+    name: API-GATEWAY
+  config:
+    import: configserver:http://localhost:8085
+  cloud:
+    gateway:
+      routes:
+      - id: USER-SERVICE
+        uri: lb://USER-SERVICE
+        predicates:
+          - Path=/users/** 
+          
+      - id: HOTEL-SERVICE
+        uri: lb://HOTEL-SERVICE
+        predicates:
+          - Path=/hotels/**,/staffs/**
+          
+      - id: RATING-SERVICE
+        uri: lb://RATING-SERVICE
+        predicates:
+          - Path=/ratings/** 
+      
+   
+#commented bcoz no need if we are using config server microservice   ------see line 22   
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka/
+#  instance:
+#    hostname: localhost   
+
+#Okta configuration for API Gateway......Spring Security
+okta:
+  oauth2:
+    issuer: https://dev-30938986.okta.com/oauth2/default
+    audience: api://default
+    client-id: 0oa9vxfbquJ2JLrhr5d7
+    client-secret: SBxXkm9TuNXKTs3C1EJtFrvdyl09gMEpOYb-LwCY
+    scopes: openid, email, offline_access, profile
